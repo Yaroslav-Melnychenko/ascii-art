@@ -4,21 +4,15 @@
 
 	$file = $_FILES;
 	const BASE_URL = 'http://localhost/ascii-art/';
+	$depth = array('&', '#', '0', 'l', ';', ',', '.');
 
 	if(isset($file) && !empty($file)){
 		if(copy($file['image']['tmp_name'], $file['image']['name'])){
-
-			echo "File is uploaded!";
 
 			$img = imagecreatefromjpeg(BASE_URL.$file['image']['name']);
 
 			$imgSizeX = imagesx($img);
 			$imgSizeY = imagesy($img);
-
-			// imagecolorat - цвет пикселя
-			// $pixel_color = imagecolorat($img, 104, 12);
-			// $rgb = imagecolorsforindex($img, $pixel_color);
-			// var_dump(rgbtohex($rgb['red'], $rgb['green'], $rgb['blue']));
 
 		}else{
 			echo "Something went wrong(";
@@ -28,7 +22,7 @@
 	
 
 	echo "<pre>";
-	var_dump($imgSizeX, $imgSizeY);
+	//var_dump($imgSizeX, $imgSizeY);
 	echo "</pre>";
 
 	
@@ -60,16 +54,35 @@
 			</div>
 			<div class="col-md-12">
 				<?php
-					echo '<table style="font-size: 8px;">';
-					for($y = 0; $y < $imgSizeY; $y = $y + 8){
-						echo '<tr>';
-						for($x = 0; $x < $imgSizeX; $x = $x + 8){
+					echo '<table style="font-size: 8px; line-height: 8px;">';
+					for($y = 0; $y < $imgSizeY; $y = $y + 4){
+						echo '<tr style="border: none;">';
+						for($x = 0; $x < $imgSizeX; $x = $x + 4){
 
 							$pixel_color = imagecolorat($img, $x, $y);
 							$rgb = imagecolorsforindex($img, $pixel_color);
 
-							echo '<td>';
-								echo '<span style="color:'.rgbtohex($rgb['red'], $rgb['green'], $rgb['blue']).'">#</span>';
+							echo '<td style="border: none;">';
+								// echo '<span style="color:'.rgbtohex($rgb['red'], $rgb['green'], $rgb['blue']).'">#</span>';
+							if($rgb['red'] < 36 && $rgb['green'] < 36 && $rgb['blue'] < 36){
+								$char = $depth[0];
+							}elseif($rgb['red'] < 2*36 && $rgb['green'] < 2*36 && $rgb['blue'] < 2*36){
+								$char = $depth[1];
+							}elseif($rgb['red'] < 3*36 && $rgb['green'] < 3*36 && $rgb['blue'] < 3*36){
+								$char = $depth[2];
+							}elseif($rgb['red'] < 4*36 && $rgb['green'] < 4*36 && $rgb['blue'] < 4*36){
+								$char = $depth[3];
+							}elseif($rgb['red'] < 5*36 && $rgb['green'] < 5*36 && $rgb['blue'] < 5*36){
+								$char = $depth[4];
+							}elseif($rgb['red'] < 6*36 && $rgb['green'] < 6*36 && $rgb['blue'] < 6*36){
+								$char = $depth[5];
+							}elseif($rgb['red'] < 7*36 && $rgb['green'] < 7*36 && $rgb['blue'] < 7*36){
+								$char = $depth[6];
+							}else{
+								$char = '-';
+							}
+
+							echo '<span>'.$char.'</span>';
 							echo '<td>';
 
 						}
