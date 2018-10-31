@@ -4,26 +4,6 @@
 
 	$file = $_FILES;
 	const BASE_URL = 'http://localhost/ascii-art/';
-	$depth = array('&', '#', '0', 'l', ';', ',', '.');
-
-	if(isset($file) && !empty($file)){
-		if(copy($file['image']['tmp_name'], $file['image']['name'])){
-
-			$img = imagecreatefromjpeg(BASE_URL.$file['image']['name']);
-
-			$imgSizeX = imagesx($img);
-			$imgSizeY = imagesy($img);
-
-		}else{
-			echo "Something went wrong(";
-		}
-	}
-
-	
-
-	echo "<pre>";
-	//var_dump($imgSizeX, $imgSizeY);
-	echo "</pre>";
 
 	
 ?>
@@ -54,41 +34,24 @@
 			</div>
 			<div class="col-md-12">
 				<?php
-					echo '<table style="font-size: 8px; line-height: 8px;">';
-					for($y = 0; $y < $imgSizeY; $y = $y + 4){
-						echo '<tr style="border: none;">';
-						for($x = 0; $x < $imgSizeX; $x = $x + 4){
 
-							$pixel_color = imagecolorat($img, $x, $y);
-							$rgb = imagecolorsforindex($img, $pixel_color);
+					if(isset($_POST) && !empty($_POST)){
+						if(copy($file['image']['tmp_name'], $file['image']['name'])){
+							$depth = array('&', '#', '0', 'l', ';', ',', '.');
 
-							echo '<td style="border: none;">';
-								// echo '<span style="color:'.rgbtohex($rgb['red'], $rgb['green'], $rgb['blue']).'">#</span>';
-							if($rgb['red'] < 36 && $rgb['green'] < 36 && $rgb['blue'] < 36){
-								$char = $depth[0];
-							}elseif($rgb['red'] < 2*36 && $rgb['green'] < 2*36 && $rgb['blue'] < 2*36){
-								$char = $depth[1];
-							}elseif($rgb['red'] < 3*36 && $rgb['green'] < 3*36 && $rgb['blue'] < 3*36){
-								$char = $depth[2];
-							}elseif($rgb['red'] < 4*36 && $rgb['green'] < 4*36 && $rgb['blue'] < 4*36){
-								$char = $depth[3];
-							}elseif($rgb['red'] < 5*36 && $rgb['green'] < 5*36 && $rgb['blue'] < 5*36){
-								$char = $depth[4];
-							}elseif($rgb['red'] < 6*36 && $rgb['green'] < 6*36 && $rgb['blue'] < 6*36){
-								$char = $depth[5];
-							}elseif($rgb['red'] < 7*36 && $rgb['green'] < 7*36 && $rgb['blue'] < 7*36){
-								$char = $depth[6];
-							}else{
-								$char = '-';
-							}
+							$picture = new Ascii(BASE_URL.$file['image']['name']);
+							//1.array of symbols 2.quality 3.font-size
+							$picture->DrawSymbols($depth, 4, 10);
 
-							echo '<span>'.$char.'</span>';
-							echo '<td>';
+							//1.quality 2.font-size
+							$picture->DrawColors(4, 10);
 
+							unlink($file['image']['name']);
 						}
-						echo '</tr>';
+
 					}
-					echo '</table>';
+					
+
 				?>
 			</div>
 		</div>
